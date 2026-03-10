@@ -17,17 +17,17 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: '#ff4d6d',
-                        secondary: '#ff758f',
-                        accent: '#ff8fa3',
-                        darkRed: '#1a0d0f',
-                        darkPurple: '#2a0f1f',
+                        primary: '#3a86ff',
+                        secondary: '#00b4d8',
+                        accent: '#90e0ef',
+                        darkBlue: '#001219',
+                        darkNavy: '#001d3d',
                     },
                     fontFamily: {
                         poppins: ['Poppins', 'sans-serif'],
                     },
                     backgroundImage: {
-                        'romantic-gradient': 'linear-gradient(to bottom, #1a0d0f, #2a0f1f, #000000)',
+                        'ocean-gradient': 'linear-gradient(to bottom, #001219, #001d3d, #000000)',
                     }
                 }
             }
@@ -36,7 +36,7 @@
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            background: #1a0d0f;
+            background: #001219;
             color: white;
             overflow-x: hidden;
         }
@@ -63,7 +63,7 @@
 
         .heart {
             position: absolute;
-            color: rgba(255, 77, 109, 0.2);
+            color: rgba(58, 134, 255, 0.2);
             animation: float 15s linear infinite;
             font-size: 20px;
         }
@@ -95,8 +95,8 @@
         }
 
         .tab-active {
-            background: #ff4d6d !important;
-            box-shadow: 0 0 15px rgba(255, 77, 109, 0.4);
+            background: #3a86ff !important;
+            box-shadow: 0 0 15px rgba(58, 134, 255, 0.4);
         }
 
         /* Hide Scrollbar */
@@ -118,8 +118,8 @@
         }
 
         .priority-btn.active {
-            background: #ff4d6d;
-            border-color: #ff4d6d;
+            background: #3a86ff;
+            border-color: #3a86ff;
             transform: scale(1.05);
         }
 
@@ -130,7 +130,7 @@
     </style>
 </head>
 
-<body class="bg-romantic-gradient min-h-screen flex justify-center">
+<body class="bg-ocean-gradient min-h-screen flex justify-center">
 
     <!-- Floating Hearts Background -->
     <div id="heart-bg" class="heart-bg"></div>
@@ -141,10 +141,10 @@
         <!-- Header -->
         <header class="text-center py-8">
             <div class="relative inline-block mb-2">
-                <span class="text-5xl drop-shadow-[0_0_10px_rgba(255,77,109,0.5)]">🌹</span>
+                <span class="text-5xl drop-shadow-[0_0_10px_rgba(58,134,255,0.5)]">💎</span>
             </div>
             <h1 class="text-2xl font-bold tracking-tight">Danh Sách Ước Mơ</h1>
-            <p class="text-accent text-sm mt-1 opacity-90">Mọi điều em muốn, anh sẽ nhớ 💌</p>
+            <p class="text-accent text-sm mt-1 opacity-90">Mọi điều em muốn, anh sẽ nhớ 🌊</p>
         </header>
 
         <!-- Tab Navigation -->
@@ -166,11 +166,11 @@
         <!-- Content Area -->
         <div id="form-container" class="space-y-6">
             <div class="text-center mb-6">
-                <h2 class="text-xl font-semibold mb-2">Thêm một món quà em thích vào đây nhoaaa ♥️</h2>
+                <h2 class="text-xl font-semibold mb-2">Thêm một món quà em thích vào đây nhoaaa 💎</h2>
                 <p id="room-status" class="text-[10px] text-primary font-medium animate-pulse">Bạn chưa kết nối phòng ⚠️
                 </p>
                 <p class="text-[10px] text-gray-400 mt-1">Em hãy thêm những món quà mình thích nhé, rồi 1 món quà may
-                    mắn sẽ là bất ngờ sau này ♥</p>
+                    mắn sẽ là bất ngờ sau này ❄️</p>
             </div>
 
             <!-- Form -->
@@ -265,7 +265,7 @@
         <!-- List Area -->
         <div id="list-container" class="hidden space-y-6 flex-1">
             <div class="text-center mb-6">
-                <h2 class="text-xl font-semibold mb-2">Bảng quà của chúng mình 💝</h2>
+                <h2 class="text-xl font-semibold mb-2">Bảng quà của chúng mình 💎</h2>
                 <p class="text-xs text-gray-400">Danh sách những điều em mong muốn...</p>
             </div>
             <div id="wishlist-items" class="space-y-3">
@@ -310,7 +310,7 @@
     <!-- Success Toast -->
     <div id="toast"
         class="fixed bottom-10 left-1/2 -translate-x-1/2 glass px-6 py-3 rounded-full border-primary border text-sm font-medium opacity-0 pointer-events-none translate-y-5 z-50">
-        Đã thêm vào danh sách ước mơ ♥
+        Đã thêm vào danh sách ước mơ 🌊
     </div>
 
     <!-- Firebase SDK -->
@@ -439,7 +439,7 @@
 
                 if (!data) {
                     emptyState.classList.remove('hidden');
-                    emptyState.innerHTML = '<p class="text-sm">Chưa có món quà nào trong danh sách đâu em ơi... ♥</p>';
+                    emptyState.innerHTML = '<p class="text-sm">Chưa có món quà nào trong danh sách đâu em ơi... ❄️</p>';
                     return;
                 }
 
@@ -516,7 +516,7 @@
             const heartBg = document.getElementById('heart-bg');
             const heart = document.createElement('div');
             heart.classList.add('heart');
-            heart.innerHTML = ['♥', '💖', '💕', '🌸'][Math.floor(Math.random() * 4)];
+            heart.innerHTML = ['💎', '❄️', '🌊', '☁️'][Math.floor(Math.random() * 4)];
             heart.style.left = Math.random() * 100 + 'vw';
             heart.style.animationDuration = (Math.random() * 5 + 10) + 's';
             heart.style.fontSize = (Math.random() * 15 + 10) + 'px';
