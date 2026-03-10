@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh Sách Ước Mơ 🌹</title>
+    <!-- Google Fonts: Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#ff4d6d',
+                        secondary: '#ff758f',
+                        accent: '#ff8fa3',
+                        darkRed: '#1a0d0f',
+                        darkPurple: '#2a0f1f',
+                    },
+                    fontFamily: {
+                        poppins: ['Poppins', 'sans-serif'],
+                    },
+                    backgroundImage: {
+                        'romantic-gradient': 'linear-gradient(to bottom, #1a0d0f, #2a0f1f, #000000)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #1a0d0f;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        /* Glassmorphism Effect */
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Floating Hearts Animation */
+        .heart-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .heart {
+            position: absolute;
+            color: rgba(255, 77, 109, 0.2);
+            animation: float 15s linear infinite;
+            font-size: 20px;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 0.5;
+            }
+
+            90% {
+                opacity: 0.5;
+            }
+
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Smooth Hover & Glow */
+        .btn-glow:hover {
+            box-shadow: 0 0 15px rgba(255, 77, 109, 0.6);
+            transform: translateY(-2px);
+        }
+
+        .tab-active {
+            background: #ff4d6d !important;
+            box-shadow: 0 0 15px rgba(255, 77, 109, 0.4);
+        }
+
+        /* Hide Scrollbar */
+        ::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+        }
+
+        .form-input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            border-color: #ff4d6d;
+            background: rgba(255, 255, 255, 0.1);
+            outline: none;
+        }
+
+        .priority-btn.active {
+            background: #ff4d6d;
+            border-color: #ff4d6d;
+            transform: scale(1.05);
+        }
+
+        /* Toast Animation */
+        #toast {
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+    </style>
+</head>
+
+<body class="bg-romantic-gradient min-h-screen flex justify-center">
+
+    <!-- Floating Hearts Background -->
+    <div id="heart-bg" class="heart-bg"></div>
+
+    <!-- Main Container (Mobile Frame) -->
+    <main class="w-full max-w-[420px] min-h-screen flex flex-col relative px-4 pb-10">
+
+        <!-- Header -->
+        <header class="text-center py-8">
+            <div class="relative inline-block mb-2">
+                <span class="text-5xl drop-shadow-[0_0_10px_rgba(255,77,109,0.5)]">🌹</span>
+            </div>
+            <h1 class="text-2xl font-bold tracking-tight">Danh Sách Ước Mơ</h1>
+            <p class="text-accent text-sm mt-1 opacity-90">Mọi điều em muốn, anh sẽ nhớ 💌</p>
+        </header>
+
+        <!-- Tab Navigation -->
+        <nav class="flex p-1 mb-8 glass rounded-full">
+            <button id="add-tab"
+                class="flex-1 py-3 px-2 rounded-full text-[10px] font-semibold flex items-center justify-center gap-1 tab-active transition-all duration-300">
+                <span>✨</span> Thêm quà
+            </button>
+            <button id="list-tab"
+                class="flex-1 py-3 px-2 rounded-full text-[10px] font-semibold flex items-center justify-center gap-1 transition-all duration-300">
+                <span>💝</span> Bảng quà
+            </button>
+            <button id="config-tab"
+                class="flex-1 py-3 px-2 rounded-full text-[10px] font-semibold flex items-center justify-center gap-1 transition-all duration-300">
+                <span>⚙️</span> Cài đặt
+            </button>
+        </nav>
+
+        <!-- Content Area -->
+        <div id="form-container" class="space-y-6">
+            <div class="text-center mb-6">
+                <h2 class="text-xl font-semibold mb-2">Thêm một món quà em thích vào đây nhoaaa ♥️</h2>
+                <p id="room-status" class="text-[10px] text-primary font-medium animate-pulse">Bạn chưa kết nối phòng ⚠️
+                </p>
+                <p class="text-[10px] text-gray-400 mt-1">Em hãy thêm những món quà mình thích nhé, rồi 1 món quà may
+                    mắn sẽ là bất ngờ sau này ♥</p>
+            </div>
+
+            <!-- Form -->
+            <form id="gift-form" class="glass rounded-2xl p-6 space-y-5">
+                <!-- Gift Name -->
+                <div class="space-y-2">
+                    <label class="text-sm font-medium flex items-center gap-2">
+                        <i class="fa-solid fa-heart text-primary text-xs"></i> Tên quà tặng
+                    </label>
+                    <input type="text" id="gift-name" placeholder="Ví dụ: Vòng tay bạc khắc tên..."
+                        class="w-full form-input rounded-xl px-4 py-3 text-sm" required>
+                </div>
+
+                <!-- Category -->
+                <div class="space-y-2">
+                    <label class="text-sm font-medium flex items-center gap-2">
+                        <i class="fa-solid fa-tag text-primary text-xs"></i> Danh mục
+                    </label>
+                    <select id="gift-category"
+                        class="w-full form-input rounded-xl px-4 py-3 text-sm appearance-none cursor-pointer">
+                        <option value="Quà Đôi & Lãng Mạn">Quà Đôi & Lãng Mạn</option>
+                        <option value="Thời Trang">Thời Trang</option>
+                        <option value="Công Nghệ">Công Nghệ</option>
+                        <option value="Mỹ Phẩm">Mỹ Phẩm</option>
+                        <option value="Đồ Handmade">Đồ Handmade</option>
+                        <option value="Khác">Khác</option>
+                    </select>
+                </div>
+
+                <!-- Price -->
+                <div class="space-y-2">
+                    <label class="text-sm font-medium flex items-center gap-2">
+                        <i class="fa-solid fa-circle-dollar-to-slot text-primary text-xs"></i> Giá ước tính (VNĐ)
+                    </label>
+                    <div class="relative">
+                        <input type="number" id="gift-price" placeholder="500,000"
+                            class="w-full form-input rounded-xl px-4 py-3 text-sm pl-10" required>
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-primary font-bold">đ</span>
+                    </div>
+                </div>
+
+                <!-- Product Link -->
+                <div class="space-y-2">
+                    <label class="text-sm font-medium flex items-center gap-2">
+                        <i class="fa-solid fa-link text-primary text-xs"></i> Link sản phẩm
+                    </label>
+                    <input type="url" id="gift-link" placeholder="Dán link sản phẩm vào đây..."
+                        class="w-full form-input rounded-xl px-4 py-3 text-sm">
+                </div>
+
+                <!-- Description -->
+                <div class="space-y-2">
+                    <label class="text-sm font-medium flex items-center gap-2">
+                        <i class="fa-solid fa-pen-to-square text-primary text-xs"></i> Mô tả chi tiết
+                    </label>
+                    <textarea id="gift-desc" placeholder="Ví dụ: Size M, màu hồng, chất liệu lụa..."
+                        class="w-full form-input rounded-xl px-4 py-3 text-sm h-20 resize-none"></textarea>
+                </div>
+
+                <!-- Priority -->
+                <div class="space-y-3">
+                    <label class="text-sm font-medium flex items-center gap-2">
+                        <i class="fa-solid fa-star text-primary text-xs"></i> Độ ưu tiên
+                    </label>
+                    <div class="flex justify-between gap-2">
+                        <button type="button" data-priority="Ước thôi"
+                            class="priority-btn flex-1 py-2 glass rounded-full text-xs flex flex-col items-center gap-1 transition-all border border-transparent active">
+                            <span class="text-lg">💭</span>
+                            <span>Ước thôi</span>
+                        </button>
+                        <button type="button" data-priority="Thích nha"
+                            class="priority-btn flex-1 py-2 glass rounded-full text-xs flex flex-col items-center gap-1 transition-all border border-transparent">
+                            <span class="text-lg">🌷</span>
+                            <span>Thích nha</span>
+                        </button>
+                        <button type="button" data-priority="Muốn lắm"
+                            class="priority-btn flex-1 py-2 glass rounded-full text-xs flex flex-col items-center gap-1 transition-all border border-transparent">
+                            <span class="text-lg">🥺</span>
+                            <span>Muốn lắm</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit"
+                    class="w-full bg-gradient-to-r from-primary to-secondary py-4 rounded-xl font-bold text-sm btn-glow transition-all mt-4">
+                    Thêm vào danh sách
+                </button>
+            </form>
+        </div>
+
+        <!-- List Area -->
+        <div id="list-container" class="hidden space-y-6 flex-1">
+            <div class="text-center mb-6">
+                <h2 class="text-xl font-semibold mb-2">Bảng quà của chúng mình 💝</h2>
+                <p class="text-xs text-gray-400">Danh sách những điều em mong muốn...</p>
+            </div>
+            <div id="wishlist-items" class="space-y-3">
+                <!-- Items will be injected here -->
+            </div>
+            <div id="empty-state" class="text-center py-10 opacity-50 hidden">
+                <p class="text-sm">Chưa có món quà nào đâu em ơi... ♥</p>
+            </div>
+        </div>
+
+        <!-- Configuration Area -->
+        <div id="config-container" class="hidden space-y-6 flex-1">
+            <div class="text-center mb-6">
+                <h2 class="text-xl font-semibold mb-2">Cài đặt kết nối ⚙️</h2>
+                <p class="text-xs text-gray-400">Nhập mã phòng chung để đồng bộ dữ liệu với người ấy.</p>
+            </div>
+
+            <div class="glass rounded-2xl p-6 space-y-5">
+                <div class="space-y-2">
+                    <label class="text-sm font-medium flex items-center gap-2">
+                        <i class="fa-solid fa-key text-primary text-xs"></i> Mã phòng (Couple Key)
+                    </label>
+                    <input type="text" id="couple-key" placeholder="Ví dụ: chungta2024"
+                        class="w-full form-input rounded-xl px-4 py-3 text-sm">
+                    <p class="text-[9px] text-gray-400">Hai người nhập cùng 1 mã này sẽ thấy chung danh sách.</p>
+                </div>
+
+                <button onclick="saveRoom()"
+                    class="w-full bg-primary/20 border border-primary/50 py-3 rounded-xl font-bold text-sm hover:bg-primary/30 transition-all">
+                    Lưu mã phòng
+                </button>
+
+                <div class="pt-4 border-t border-white/10">
+                    <p class="text-[10px] text-gray-400 italic">Lưu ý: Để hoạt động thực sự, bạn cần cài đặt Firebase
+                        API Key trong mã nguồn nữa nhé.</p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Success Toast -->
+    <div id="toast"
+        class="fixed bottom-10 left-1/2 -translate-x-1/2 glass px-6 py-3 rounded-full border-primary border text-sm font-medium opacity-0 pointer-events-none translate-y-5 z-50">
+        Đã thêm vào danh sách ước mơ ♥
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, push, onValue, remove, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAevqr0SM6v75ld8NFOp0hPgMtHkZj5Dp0",
+            authDomain: "mywishlist-97f65.firebaseapp.com",
+            databaseURL: "https://mywishlist-97f65-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "mywishlist-97f65",
+            storageBucket: "mywishlist-97f65.firebasestorage.app",
+            messagingSenderId: "4790781289",
+            appId: "1:4790781289:web:04f3b941ef8b7cd8d3e9f8",
+            measurementId: "G-DX1X2F0P7T"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // UI Elements
+        const addTab = document.getElementById('add-tab');
+        const listTab = document.getElementById('list-tab');
+        const configTab = document.getElementById('config-tab');
+
+        const formContainer = document.getElementById('form-container');
+        const listContainer = document.getElementById('list-container');
+        const configContainer = document.getElementById('config-container');
+
+        const giftForm = document.getElementById('gift-form');
+        const wishlistItems = document.getElementById('wishlist-items');
+        const emptyState = document.getElementById('empty-state');
+        const toast = document.getElementById('toast');
+        const coupleKeyInput = document.getElementById('couple-key');
+        const roomStatus = document.getElementById('room-status');
+
+        let currentRoom = localStorage.getItem('couple_key') || '';
+        if (currentRoom) {
+            coupleKeyInput.value = currentRoom;
+            roomStatus.innerText = `Đang kết nối: ${currentRoom} ❤️`;
+        }
+
+        // --- Tab Switching ---
+        function switchTab(target) {
+            [addTab, listTab, configTab].forEach(t => t.classList.remove('tab-active'));
+            [formContainer, listContainer, configContainer].forEach(c => c.classList.add('hidden'));
+
+            if (target === 'list') {
+                listTab.classList.add('tab-active');
+                listContainer.classList.remove('hidden');
+                renderWishlist();
+            } else if (target === 'config') {
+                configTab.classList.add('tab-active');
+                configContainer.classList.remove('hidden');
+            } else {
+                addTab.classList.add('tab-active');
+                formContainer.classList.remove('hidden');
+            }
+        }
+
+        addTab.onclick = () => switchTab('add');
+        listTab.onclick = () => switchTab('list');
+        configTab.onclick = () => switchTab('config');
+
+        // --- Firebase Logic ---
+        window.saveRoom = function () {
+            const key = coupleKeyInput.value.trim();
+            if (key) {
+                localStorage.setItem('couple_key', key);
+                currentRoom = key;
+                roomStatus.innerText = `Đang kết nối: ${key} ❤️`;
+                showToast("Đã lưu mã phòng! ✨");
+                renderWishlist();
+            }
+        };
+
+        giftForm.onsubmit = async (e) => {
+            e.preventDefault();
+            if (!currentRoom || firebaseConfig.apiKey === "YOUR_API_KEY") {
+                showToast("Vui lòng cài đặt mã phòng và Firebase trước nha! ⚠️");
+                return;
+            }
+
+            const name = document.getElementById('gift-name').value;
+            const category = document.getElementById('gift-category').value;
+            const price = document.getElementById('gift-price').value;
+            const link = document.getElementById('gift-link').value;
+            const desc = document.getElementById('gift-desc').value;
+
+            const newGift = {
+                name,
+                category,
+                price,
+                link,
+                desc,
+                priority: selectedPriority,
+                timestamp: Date.now()
+            };
+
+            try {
+                const roomRef = ref(db, `wishlists/${currentRoom}`);
+                await push(roomRef, newGift);
+                giftForm.reset();
+                showToast("Đã thêm vào danh sách ước mơ ♥");
+            } catch (error) {
+                console.error(error);
+                showToast("Lỗi kết nối Firebase rồi! 😢");
+            }
+        };
+
+        function renderWishlist() {
+            if (!currentRoom || firebaseConfig.apiKey === "YOUR_API_KEY") {
+                wishlistItems.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                emptyState.innerHTML = '<p class="text-xs">Bạn chưa thiết lập Firebase hoặc mã phòng. <br> Vào tab <i class="fa-solid fa-gear"></i> để cài đặt nha!</p>';
+                return;
+            }
+
+            const roomRef = ref(db, `wishlists/${currentRoom}`);
+            onValue(roomRef, (snapshot) => {
+                const data = snapshot.val();
+                wishlistItems.innerHTML = '';
+
+                if (!data) {
+                    emptyState.classList.remove('hidden');
+                    emptyState.innerHTML = '<p class="text-sm">Chưa có món quà nào trong danh sách đâu em ơi... ♥</p>';
+                    return;
+                }
+
+                emptyState.classList.add('hidden');
+                const items = Object.entries(data).map(([id, val]) => ({ id, ...val }));
+                items.sort((a, b) => b.timestamp - a.timestamp);
+
+                items.forEach(gift => {
+                    const priorityEmoji = gift.priority === 'Ước thôi' ? '💭' : (gift.priority === 'Thích nha' ? '🌷' : '🥺');
+                    const card = document.createElement('div');
+                    card.className = 'glass p-4 rounded-xl space-y-3 animate-in fade-in slide-in-from-bottom-2 duration-300';
+                    card.innerHTML = `
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center text-xl shrink-0">
+                                ${priorityEmoji}
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="font-semibold text-sm line-clamp-1">${gift.name}</h3>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <span class="text-[10px] px-2 py-0.5 rounded-full bg-white/10 text-gray-300">${gift.category}</span>
+                                    <span class="text-[10px] font-bold text-primary">${new Number(gift.price).toLocaleString()} đ</span>
+                                </div>
+                            </div>
+                            <button onclick="deleteGift('${gift.id}')" class="text-white/20 hover:text-red-400 transition-colors p-2">
+                                <i class="fa-solid fa-trash-can text-xs"></i>
+                            </button>
+                        </div>
+                        ${gift.desc ? `<p class="text-[11px] text-gray-400 px-1 border-l-2 border-primary/30 ml-2 py-1">${gift.desc}</p>` : ''}
+                        ${gift.link ? `
+                            <a href="${gift.link}" target="_blank" class="block w-full text-center py-2 glass rounded-lg text-[10px] font-medium text-accent hover:bg-white/10 transition-all">
+                                <i class="fa-solid fa-arrow-up-right-from-square mr-1"></i> Xem sản phẩm
+                            </a>
+                        ` : ''}
+                    `;
+                    wishlistItems.appendChild(card);
+                });
+            });
+        }
+
+        window.deleteGift = function (id) {
+            if (confirm("Xóa món quà này nhé? 🥺")) {
+                const giftRef = ref(db, `wishlists/${currentRoom}/${id}`);
+                remove(giftRef);
+            }
+        };
+
+        function showToast(msg) {
+            toast.innerText = msg;
+            toast.style.opacity = '1';
+            toast.style.transform = 'translate(-50%, -20px)';
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translate(-50%, 20px)';
+            }, 2500);
+        }
+
+        // Share Link functionality
+        window.copyConfigHelp = function () {
+            alert("Bạn cần dán Firebase Config vào file index.html để dùng được tính năng đồng bộ nhé!");
+        };
+
+        // Initialize Priority Selection
+        let selectedPriority = 'Ước thôi';
+        document.querySelectorAll('.priority-btn').forEach(btn => {
+            btn.onclick = () => {
+                document.querySelectorAll('.priority-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                selectedPriority = btn.getAttribute('data-priority');
+            };
+        });
+
+        // Background Hearts
+        function createHeart() {
+            const heartBg = document.getElementById('heart-bg');
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerHTML = ['♥', '💖', '💕', '🌸'][Math.floor(Math.random() * 4)];
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = (Math.random() * 5 + 10) + 's';
+            heart.style.fontSize = (Math.random() * 15 + 10) + 'px';
+            heartBg.appendChild(heart);
+            setTimeout(() => heart.remove(), 15000);
+        }
+        setInterval(createHeart, 800);
+    </script>
+</body>
+
+</html>
